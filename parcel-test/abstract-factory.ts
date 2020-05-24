@@ -90,5 +90,30 @@ const App = (factory: AbstractThemeFactory) => {
   button.submitInput(input);
 };
 
-App(new NotionThemeFactory());
-App(new InstagramThemeFactory());
+let state = {
+  theme: 'notion',
+};
+
+const availableThemes = ['notion', 'instagram'];
+const factorySelector = {
+  notion: NotionThemeFactory,
+  instagram: InstagramThemeFactory,
+};
+
+const changeTheme = (state) => {
+  const currentTheme = state.theme;
+  const pos = availableThemes.indexOf(currentTheme);
+  state.theme = availableThemes[(pos + 1) % availableThemes.length];
+  return new factorySelector[state.theme]();
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  const changeThemeButton = document.getElementById('change-theme-button');
+
+  changeThemeButton.addEventListener('click', (e) => {
+    const updatedFactory = changeTheme(state);
+    App(updatedFactory);
+  });
+
+  App(new NotionThemeFactory());
+});
