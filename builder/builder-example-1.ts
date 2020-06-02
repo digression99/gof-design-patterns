@@ -1,6 +1,6 @@
 export interface ModalBuilder {
-  setWidth(w: Number): ModalBuilder;
-  setHeight(h: Number): ModalBuilder;
+  setWidth(w: number): ModalBuilder;
+  setHeight(h: number): ModalBuilder;
   getModal(): Modal;
 }
 
@@ -15,18 +15,61 @@ export class InstagramModalBuilder implements ModalBuilder {
     this.instagramModal = new InstagramModal();
   }
 
-  setWidth(w: Number): ModalBuilder {
+  setWidth(w: number): ModalBuilder {
     this.instagramModal.setWidth(w);
     return this;
   }
 
-  setHeight(h: Number): ModalBuilder {
+  setHeight(h: number): ModalBuilder {
     this.instagramModal.setHeight(h);
     return this;
   }
 
-  getModal() {
+  getModal(): Modal {
     return this.instagramModal;
+  }
+}
+
+class NotionModal implements Modal {
+  width: number;
+  height: number;
+
+  setWidth(w: number): void {
+    this.width = w;
+  }
+
+  setHeight(h: number): void {
+    this.height = h;
+  }
+
+  open(): void {
+    console.log(`Notion modal opened with width : ${this.width}, height : ${this.height}`);
+  }
+}
+
+export class NotionModalBuilder implements ModalBuilder {
+  private notionModal: NotionModal;
+
+  constructor() {
+    this.reset();
+  }
+
+  public reset(): void {
+    this.notionModal = new NotionModal();
+  }
+
+  setWidth(w: number): ModalBuilder {
+    this.notionModal.setWidth(w);
+    return this;
+  }
+
+  setHeight(h: number): ModalBuilder {
+    this.notionModal.setHeight(h);
+    return this;
+  }
+
+  getModal(): Modal {
+    return this.notionModal;
   }
 }
 
@@ -60,10 +103,7 @@ class ModalDirector {
   }
 
   public buildDefaultModal() {
-    return this.modalBuilder
-      .setWidth(100)
-      .setHeight(100)
-      .getModal();
+    return this.modalBuilder.setWidth(100).setHeight(100).getModal();
   }
 }
 
@@ -71,7 +111,5 @@ export const Client = () => {
   const modalDirector = new ModalDirector();
 
   modalDirector.setBuilder(new InstagramModalBuilder());
-  modalDirector
-    .buildDefaultModal()
-    .open();
-}
+  modalDirector.buildDefaultModal().open();
+};

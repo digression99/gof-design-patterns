@@ -1,4 +1,3 @@
-
 export interface Builder {
   producePartA(): void;
   producePartB(): void;
@@ -43,7 +42,6 @@ export class Product1 {
 }
 
 export class Director {
-
   private builder: Builder;
 
   public setBuilder(builder: Builder): void {
@@ -76,5 +74,5 @@ export const Client = (director: Director) => {
   console.log('custom product : ');
   builder.producePartA();
   builder.producePartC();
-  builder.getProduct().listParts()
-}
+  builder.getProduct().listParts();
+};

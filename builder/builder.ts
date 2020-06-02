@@ -7,4 +7,4 @@ document.addEventListener('DOMContentLoaded', () => {
   // Client(director);
 
   ModalClient();
-})
+});
