@@ -2,20 +2,24 @@
 
 ## Introduction
 
-* This project is to demonstrate design patterns sourced from GOF design patterns book.
+- This project is to demonstrate design patterns sourced from GOF design patterns book.
 
-* A specific design pattern directory may have other design patterns other than specified.
+- A specific design pattern directory may have other design patterns other than specified.
 
-* Bundles with [parcel](https://parceljs.org/getting_started.html)
+- Bundles with [parcel](https://parceljs.org/getting_started.html)
 
 ## Requirements
 
-* Node.js
+- Node.js
 
-## Installation 
+## Installation
 
-* Go to any design pattern directory and run `npm i`
+- Go to any design pattern directory and run `npm i`
 
-* Run `npm run start`
+- Run `npm run start`
 
-* go to `http://localhost:1234`
+- go to `http://localhost:1234`
+
+---
+
+- or, use `ts-node` to run each ts file.
