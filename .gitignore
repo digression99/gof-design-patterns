@@ -3,6 +3,7 @@
 # Edit at https://www.gitignore.io/?templates=webstorm,visualstudiocode
 
 ### VisualStudioCode ###
+.vscode/
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
