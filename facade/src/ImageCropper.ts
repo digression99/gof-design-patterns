@@ -1,34 +1,39 @@
 import Croppie from "croppie";
-import defaultImage from "./question-mark.jpg";
+import { store } from "./store";
+import { croppieOptions } from "./constants";
+
+const cropImage = (blobUrl) => ({ type: "CROP_IMAGE", payload: blobUrl });
 export class ImageCropper {
-  constructor(public node: HTMLElement = null, public croppie: Croppie = null) {
-    this.croppieContainer = document.getElementById("image-cropper");
-    this.cropButton = document.getElementById("crop-button");
-    this.croppedImage = document.getElementById("cropped-image");
+  croppieContainer: HTMLDivElement;
+  cropButton: HTMLButtonElement;
+  croppedImage: HTMLImageElement;
+  croppie: Croppie;
 
-    this.croppie = new Croppie(this.croppieContainer, {
-      boundary: {
-        width: 400,
-        height: 400,
-      },
-      viewport: {
-        width: 100,
-        height: 100,
-        type: "circle",
-      },
-      showZoomer: false,
-    });
+  constructor() {
+    this.croppieContainer = document.getElementById(
+      "image-cropper"
+    ) as HTMLDivElement;
+    this.cropButton = document.getElementById(
+      "crop-button"
+    ) as HTMLButtonElement;
+    this.croppedImage = document.getElementById(
+      "cropped-image"
+    ) as HTMLImageElement;
 
-    console.log("ImageCropper imported.");
+    this.croppie = new Croppie(this.croppieContainer, croppieOptions);
+  }
 
-    this.croppie.bind({
-      url: defaultImage,
-    });
+  initialize() {
+    const state = store.getState();
+    this.croppie.bind({ url: state.imageUrl });
 
-    this.cropButton.addEventListener("click", () => {
-      this.croppie.result("blob").then((b) => {
-        this.croppedImage.src = URL.createObjectURL(b);
-      });
+    const handleCropButtonClick = () =>
+      this.croppie.result("blob").then((b) => store.dispatch(cropImage(b)));
+    this.cropButton.addEventListener("click", handleCropButtonClick);
+
+    store.subscribe(() => {
+      const state = store.getState();
+      this.croppedImage.src = state.croppedImageUrl;
     });
   }
 

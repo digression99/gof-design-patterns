@@ -1,12 +1,24 @@
 import { createStore } from "redux";
+import defaultImage from "./question-mark.jpg";
 
 const initialState = {
-  imageUrl: "",
+  imageUrl: defaultImage,
+  croppedImageUrl: "",
 };
 
 const reducer = (state = initialState, action) => {
   console.log("reducer called, action : ", action);
-  return state;
+
+  switch (action.type) {
+    case "CROP_IMAGE": {
+      return {
+        ...state,
+        croppedImageUrl: action.payload,
+      };
+    }
+    default:
+      return state;
+  }
 };
 
 const configureStore = () => {
