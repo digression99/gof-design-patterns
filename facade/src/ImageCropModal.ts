@@ -14,6 +14,13 @@ export class ImageCropModal {
     this.imageCropper = new ImageCropper();
     this.imageFilter = new ImageFilter();
     this.rangeSlider = new RangeSlider();
-    console.log("ImageCropModal imported.");
+
+    const filterButton = document.getElementById("filter-button");
+
+    filterButton.addEventListener("click", () => {
+      this.imageCropper
+        .getCroppedImage()
+        .then(this.imageFilter.applyFilter.bind(this.imageFilter));
+    });
   }
 }

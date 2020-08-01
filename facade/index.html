@@ -2,6 +2,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Document</title>
   </head>
   <body>
@@ -9,6 +10,15 @@
       <div id="range-slider"></div>
       <div class="image-cropper-container">
         <div id="image-cropper"></div>
+      </div>
+      <div>
+        <button id="crop-button">CROP!</button>
+        <img src="" alt="cropped-image" id="cropped-image" />
+      </div>
+
+      <div>
+        <canvas id="image-filter"></canvas>
+        <button id="filter-button">Apply image filter!</button>
       </div>
     </div>
     <script src="./src/index.ts"></script>
