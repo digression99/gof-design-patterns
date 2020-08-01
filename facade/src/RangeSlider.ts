@@ -1,21 +1,22 @@
 import JSR from "mm-jsr";
+import { store } from "./store";
 
 export class RangeSlider {
-  constructor() {
-    const parent = document.getElementById("range-slider");
+  jsr: JSR;
+
+  constructor(elementId: string, handleUpdate: Function) {
+    const parent = document.getElementById(elementId);
     const input = document.createElement("input");
 
     parent.appendChild(input);
-    const jsr = new JSR(input, {
+
+    this.jsr = new JSR(input, {
       max: 11,
       values: [0],
       sliders: 1,
       grid: false,
     });
 
-    jsr.addEventListener("update", (elem, value) => {
-      console.log("elem : ", elem);
-      console.log("value : ", value);
-    });
+    this.jsr.addEventListener("update", handleUpdate);
   }
 }
