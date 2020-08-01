@@ -1,6 +1,11 @@
 import { createStore } from "redux";
 import defaultImage from "./question-mark.jpg";
 
+export const cropImage = (blobUrl) => ({
+  type: "CROP_IMAGE",
+  payload: blobUrl,
+});
+
 export const selectImage = (url) => ({ type: "SELECT_IMAGE", payload: url });
 
 export const setFilterNoise = (noiseValue) => ({

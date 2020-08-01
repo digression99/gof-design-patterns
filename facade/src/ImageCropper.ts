@@ -1,8 +1,7 @@
 import Croppie from "croppie";
-import { store } from "./store";
+import { store, cropImage } from "./store";
 import { croppieOptions } from "./constants";
 
-const cropImage = (blobUrl) => ({ type: "CROP_IMAGE", payload: blobUrl });
 export class ImageCropper {
   croppieContainer: HTMLDivElement;
   cropButton: HTMLButtonElement;
@@ -21,18 +20,23 @@ export class ImageCropper {
     ) as HTMLImageElement;
 
     this.croppie = new Croppie(this.croppieContainer, croppieOptions);
+
+    this.initialize();
   }
 
   initialize() {
     const state = store.getState();
-    this.croppie.bind({ url: state.imageUrl });
+    this.croppie.bind({ url: state.selectedImageUrl });
 
     const handleCropButtonClick = () =>
-      this.croppie.result("blob").then((b) => store.dispatch(cropImage(b)));
+      this.croppie
+        .result("blob")
+        .then((b) => store.dispatch(cropImage(URL.createObjectURL(b))));
     this.cropButton.addEventListener("click", handleCropButtonClick);
 
     store.subscribe(() => {
       const state = store.getState();
+      this.croppie.bind({ url: state.selectedImageUrl });
       this.croppedImage.src = state.croppedImageUrl;
     });
   }
