@@ -7,9 +7,11 @@
   </head>
   <body>
     <div id="root">
-      <div id="range-slider"></div>
       <div class="image-cropper-container">
         <div id="image-cropper"></div>
+        <div>
+          <input type="file" id="image-input" accept="image/jpeg,image/png" />
+        </div>
       </div>
       <div>
         <button id="crop-button">CROP!</button>
@@ -19,10 +21,25 @@
       <div>
         <canvas id="image-filter"></canvas>
         <button id="filter-button">Apply image filter!</button>
-      </div>
 
-      <div>
-        <input type="file" id="image-input" accept="image/jpeg,image/png" />
+        <div>
+          <div class="slider-container">
+            <div class="slider-form-item">
+              <span class="slider-text">Noise</span>
+              <div id="range-slider-1" class="range-slider"></div>
+            </div>
+
+            <div class="slider-form-item">
+              <span class="slider-text">Hue</span>
+              <div id="range-slider-2" class="range-slider"></div>
+            </div>
+
+            <div class="slider-form-item">
+              <span class="slider-text">Ripple</span>
+              <div id="range-slider-3" class="range-slider"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <script src="./src/index.ts"></script>
