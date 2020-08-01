@@ -12,7 +12,8 @@
   "dependencies": {
     "croppie": "^2.6.5",
     "mm-jsr": "^1.1.6",
-    "parcel-bundler": "^1.12.4"
+    "parcel-bundler": "^1.12.4",
+    "redux": "^4.0.5"
   },
   "devDependencies": {
     "sass": "^1.26.10",

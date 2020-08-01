@@ -1,5 +1,9 @@
 # GTDs
 
-- [ ] Add js manipulate
+- [x] Add js manipulate
 
-- [ ] Bind cropped url to filter url
+- [x] Bind cropped url to filter url
+
+- [ ] Add range slider for filter
+
+- [ ] Add image selector
