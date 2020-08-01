@@ -1,3 +1,7 @@
+html {
+  font-size: 16px;
+}
+
 body {
   background: darksalmon;
 }
@@ -6,4 +10,24 @@ body {
   width: 100%;
   display: flex;
   justify-content: center;
+}
+
+.range-slider {
+  display: inline-block;
+}
+
+.slider-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.slider-text {
+  margin-right: 1rem;
+}
+
+.slider-form-item {
+  display: flex;
+  max-width: 30rem;
+  justify-content: space-between;
+  align-items: center;
 }
