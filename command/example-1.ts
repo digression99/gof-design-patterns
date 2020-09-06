@@ -4,12 +4,12 @@ interface AppState {
 }
 
 interface Command {
-  execute: (state: AppState) => void;
+  execute: (state: AppState) => AppState;
+  undo: (oldState: AppState) => AppState;
 }
 
 type CommandFactory = (options?: { [key: string]: any }) => Command;
 
-// Command Queue
 const createCommandManager = (initialState) => {
   const commandQueue = [];
   const historyStack = [];
@@ -26,10 +26,15 @@ const createCommandManager = (initialState) => {
     }
 
     const command = commandQueue.shift();
+
+    if (command instanceof UndoCommand) {
+      undo();
+      return;
+    }
+
     const nextState = command.execute(currentState);
 
-    historyStack.push(currentState); // only undo is possible.
-
+    historyStack.push(currentState);
     currentState = { ...currentState, ...nextState };
     console.log("Current state : ", currentState);
     return true;
@@ -46,41 +51,69 @@ const createCommandManager = (initialState) => {
 
   const getState = () => currentState;
 
+  const undo = () => {
+    const oldState = historyStack.pop();
+    currentState = { ...oldState };
+    console.log("undoed state : ", currentState);
+  };
+
   run();
 
   return {
     push,
     executeCommand,
     getState,
+    undo,
   };
 };
 
-// commands
-const CopyCommand: CommandFactory = ({ state, text }) => {
-  const execute = (state) => {
-    console.log(`Copy command executed, copy text : ${text}`);
+class CopyCommand implements Command {
+  constructor(public text: string) {}
+
+  execute(state) {
+    console.log(`Copy command executed, copy text : ${this.text}`);
 
     return {
-      clipboard: text,
+      ...state,
+      clipboard: this.text,
     };
-  };
+  }
 
-  return { execute };
-};
+  undo(state) {
+    return state;
+  }
+}
 
-const PasteCommand: CommandFactory = ({ state, text }) => {
-  const execute = (state) => {
-    console.log(`Paste command exenuted, pasteText : ${text}`);
+class PasteCommand implements Command {
+  constructor(public text: string) {}
+
+  execute(state) {
+    console.log("[PasteCommand] state : ", state);
+    console.log(`Paste command exenuted, pasteText : ${this.text}`);
 
     return {
-      editorText: state.editorText.concat(text),
+      ...state,
+      editorText: state.editorText.concat(this.text),
     };
-  };
+  }
 
-  return { execute };
-};
+  undo(oldState) {
+    return {
+      ...oldState,
+      editorText: oldState.editorText,
+    };
+  }
+}
 
-// GUIs
+class UndoCommand implements Command {
+  execute(state) {
+    return state;
+  }
+  undo(state) {
+    return state;
+  }
+}
+
 const Button = ({ text, onClick }) => {
   const width = 100;
   const height = 100;
@@ -117,33 +150,41 @@ const client = () => {
 
   const CopyButton = Button({
     text: "Copy button",
-    onClick: (text) => commandManager.push(CopyCommand({ text })),
+    onClick: (text) => {
+      commandManager.push(new CopyCommand(text));
+    },
   });
 
   CopyButton.handleClick();
 
   const PasteButton = Button({
     text: "Paste Button",
-    onClick: (text) => commandManager.push(PasteCommand({ text })),
+    onClick: (text) => {
+      commandManager.push(new PasteCommand(text));
+    },
   });
 
+  PasteButton.handleClick();
   PasteButton.handleClick();
 
   console.log("---------------");
 
   const CopyToolbar = Toolbar({
     title: "Copy",
-    onSelected: (text) => commandManager.push(CopyCommand({ text })),
+    onSelected: (text) => commandManager.push(new CopyCommand(text)),
   });
 
   CopyToolbar.handleSelect();
 
   const PasteToolbar = Toolbar({
     title: "Paste",
-    onSelected: (text) => commandManager.push(PasteCommand({ text })),
+    onSelected: (text) => commandManager.push(new PasteCommand(text)),
   });
 
   PasteToolbar.handleSelect();
+
+  commandManager.push(new UndoCommand());
+  commandManager.push(new UndoCommand());
 };
 
 client();
