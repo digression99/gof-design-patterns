@@ -29,7 +29,7 @@ const createCommandManager = (initialState) => {
 
     if (command instanceof UndoCommand) {
       undo();
-      return;
+      return true;
     }
 
     const nextState = command.execute(currentState);
@@ -89,7 +89,7 @@ class PasteCommand implements Command {
 
   execute(state) {
     console.log("[PasteCommand] state : ", state);
-    console.log(`Paste command exenuted, pasteText : ${this.text}`);
+    console.log(`Paste command executed, pasteText : ${this.text}`);
 
     return {
       ...state,
@@ -183,6 +183,8 @@ const client = () => {
 
   PasteToolbar.handleSelect();
 
+  commandManager.push(new UndoCommand());
+  commandManager.push(new UndoCommand());
   commandManager.push(new UndoCommand());
   commandManager.push(new UndoCommand());
 };
