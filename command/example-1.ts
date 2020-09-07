@@ -5,7 +5,7 @@ interface AppState {
 
 interface Command {
   execute: (state: AppState) => AppState;
-  undo: (oldState: AppState) => AppState;
+  undo: (currentState: AppState) => AppState;
 }
 
 type CommandFactory = (options?: { [key: string]: any }) => Command;
