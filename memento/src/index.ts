@@ -1,18 +1,19 @@
 // add reactive system to manage data changes reactively.
+import "normalize.css";
 
 class Editor {
   private text: string;
-  private element: HTMLInputElement;
+  private element: HTMLTextAreaElement;
 
-  constructor(element: HTMLInputElement) {
+  constructor(element: HTMLTextAreaElement) {
+    this.text = "";
     this.element = element;
     element.addEventListener("change", this.handleChangeText.bind(this));
   }
 
   handleChangeText(e: InputEvent) {
-    const target = e.target as HTMLInputElement;
+    const target = e.target as HTMLTextAreaElement;
     this.text = target.value;
-    console.log("[handleChangeText] text : ", this.text);
   }
 
   onDestory() {
@@ -23,7 +24,6 @@ class Editor {
   }
 
   public save(): Snapshot {
-    console.log("saving... text : ", this.text);
     return new EditorSnapshot(this.text);
   }
 
@@ -75,12 +75,12 @@ class EditorHistory {
 
   public backup(): void {
     this.snapshots.push(this.editor.save());
-
     this.showHistory();
   }
 
   public undo(): void {
     if (this.snapshots.length < 1) return;
+    console.log("snapshot exists... : ", this.snapshots);
 
     const latestSnapshot = this.snapshots.pop();
     this.editor.restore(latestSnapshot);
@@ -89,6 +89,8 @@ class EditorHistory {
   }
 
   public showHistory(): void {
+    console.log("show history, snapshots: ", this.snapshots);
+
     this.snapshotHistoryList.innerHTML = this.snapshots
       .map(
         (snapshot, idx) => `
@@ -100,11 +102,13 @@ class EditorHistory {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("dom loaded..");
-  const editor = new Editor(document.querySelector("#text-input"));
+  const editor = new Editor(
+    <HTMLTextAreaElement>document.getElementById("textarea")
+  );
+
   const editorHistory = new EditorHistory(
     editor,
-    document.getElementById("snapshot-history-list") as HTMLUListElement
+    <HTMLUListElement>document.getElementById("snapshot-history-list")
   );
 
   document.getElementById("save-button").addEventListener("click", () => {

@@ -1,11 +1,57 @@
 <html>
-  <head></head>
-  <body>
-    <div>
-      <input type="text" id="text-input" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
 
-      <button id="save-button">save</button>
-      <button id="restore-button">restore</button>
+      .container {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .button {
+        height: 40px;
+        background: blanchedalmond;
+        border: none;
+        margin-top: 10px;
+      }
+
+      .button:active {
+        background: rgba(0, 0, 0, 0.1);
+      }
+
+      .snapshot-history-list {
+      }
+
+      #textarea {
+        padding: 10px;
+        width: 100%;
+        resize: none;
+        border: none;
+        min-height: 400px;
+      }
+
+      #textarea:active,
+      #textarea:focus {
+        background: rgba(0, 0, 0, 0.1);
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <textarea
+        placeholder="Type anything..."
+        type="text"
+        id="textarea"
+      ></textarea>
+
+      <button class="button" id="save-button">save</button>
+      <button class="button" id="restore-button">restore</button>
 
       <ul id="snapshot-history-list">
         Snapshot histories
