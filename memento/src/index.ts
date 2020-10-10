@@ -1,5 +1,7 @@
 // add reactive system to manage data changes reactively.
 import "normalize.css";
+import { of, from, fromEvent, Observable } from "rxjs";
+import { filter, tap, reduce, map } from "rxjs/operators";
 
 class Editor {
   private text: string;
@@ -69,7 +71,6 @@ class EditorHistory {
   constructor(editor: Editor, snapshotHistoryList: HTMLUListElement) {
     this.snapshots = [];
     this.editor = editor;
-
     this.snapshotHistoryList = snapshotHistoryList;
   }
 
@@ -79,43 +80,55 @@ class EditorHistory {
   }
 
   public undo(): void {
-    if (this.snapshots.length < 1) return;
-    console.log("snapshot exists... : ", this.snapshots);
-
-    const latestSnapshot = this.snapshots.pop();
-    this.editor.restore(latestSnapshot);
-
-    this.showHistory();
+    of(this.snapshots)
+      .pipe(
+        tap(() => console.log("undo received.")),
+        filter((snapshots: Snapshot[]) => snapshots.length >= 1),
+        map((snapshots) => snapshots.pop())
+      )
+      .subscribe((latestSnapshot) => {
+        this.editor.restore(latestSnapshot);
+        this.showHistory();
+      });
   }
 
   public showHistory(): void {
-    console.log("show history, snapshots: ", this.snapshots);
-
-    this.snapshotHistoryList.innerHTML = this.snapshots
-      .map(
-        (snapshot, idx) => `
-    <li>Snapshot #${idx + 1} : ${snapshot.getName()}</li>
-    `
+    from<Snapshot[]>(this.snapshots)
+      .pipe(
+        map(
+          (snapshot: Snapshot, index: number) =>
+            `<li>Snapshot #${index + 1} : ${snapshot.getName()}</li>`
+        ),
+        reduce((acc, cur) => acc.concat(cur), "")
       )
-      .join("");
+      .subscribe((v) => (this.snapshotHistoryList.innerHTML = v));
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const editor = new Editor(
-    <HTMLTextAreaElement>document.getElementById("textarea")
-  );
+fromEvent(document, "DOMContentLoaded")
+  .pipe(
+    map(
+      () =>
+        [
+          <HTMLTextAreaElement>document.getElementById("textarea"),
+          <HTMLUListElement>document.getElementById("snapshot-history-list"),
+        ] as const
+    ),
 
-  const editorHistory = new EditorHistory(
-    editor,
-    <HTMLUListElement>document.getElementById("snapshot-history-list")
-  );
+    map(([editorRef, snapshotHistoryRef]) => {
+      const editor = new Editor(editorRef);
+      const editorHistory = new EditorHistory(editor, snapshotHistoryRef);
+      return { editorHistory };
+    })
+  )
+  .subscribe(({ editorHistory }) => {
+    fromEvent(document.getElementById("save-button"), "click").subscribe(() => {
+      editorHistory.backup();
+    });
 
-  document.getElementById("save-button").addEventListener("click", () => {
-    editorHistory.backup();
+    fromEvent(document.getElementById("restore-button"), "click").subscribe(
+      () => {
+        editorHistory.undo();
+      }
+    );
   });
-
-  document.getElementById("restore-button").addEventListener("click", () => {
-    editorHistory.undo();
-  });
-});
